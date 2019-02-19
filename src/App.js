@@ -115,22 +115,20 @@ export class App extends Component {
     return (
       <div>
         <Route path='/' render={() =>
-          <div>
-            <AuthenticatedUserContext.Provider value={this.state.user}>
-              <Header
-                userManager={this.userManager}
-                addRide={this.openAddRideDialog}
-              />
-              <Grid container justify='center'>
-                <Rides rides={this.props.rides.filter(this.props.filter)}/>
-              </Grid>
-            </AuthenticatedUserContext.Provider>
-            <ErrorMessage/>
-          </div>}
-        />
+          <AuthenticatedUserContext.Provider value={this.state.user}>
+            <Header
+              userManager={this.userManager}
+              addRide={this.openAddRideDialog}
+            />
+            <Grid container justify='center'>
+              <Rides rides={this.props.rides.filter(this.props.filter)}/>
+            </Grid>
+          </AuthenticatedUserContext.Provider>
+        }/>
         <Route path='/callback' render={props => (
           <Callback {...props} userManager={this.userManager}/>
         )}/>
+        <ErrorMessage/>
       </div>
     )}
 }
