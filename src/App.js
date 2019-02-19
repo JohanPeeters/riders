@@ -53,6 +53,7 @@ export class App extends Component {
           // if no user is found, oidc-client returns null
           // Rejecting the promise would have been more elegant
           if (user)
+            // missing check: has token expired?
             this.setState({
               user: user
             })
