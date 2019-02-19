@@ -2,6 +2,8 @@
 
 ```
 {
-  errorMessage: 'cannot retrieve rides - network error'
+  error: 'cannot retrieve rides - network error',
+  rides: [],
+  filter: ride => true
 }
 ```
