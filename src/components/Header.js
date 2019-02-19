@@ -51,12 +51,14 @@ class Header extends Component {
     // expects are not sent by oidc-client.
     // Without arguments, as it is being called here, oidc-client sends the
     // id_token in a parameter named id_token_hint.
-    // By judiciously adding parameters, it can be arranged to also send state and post_logout_redirect_uri.
-    // The latter could have been useful since Cognito expects a parameter `logout_uri` with the same semantics.
-    // It also expects the client_id. These will be supplied in the redirect below.
-    // But first, we remove the user from the store. If we do not do this, the app will continue
-    // to use stored tokens. Since we are self-contained tokens, these are not validated
-    // with the issuer and will continue to afford access.
+    // By judiciously adding parameters, it can be arranged to also send state and
+    // post_logout_redirect_uri. The latter could have been useful since Cognito
+    // expects a parameter `logout_uri` with the same semantics.
+    // It also expects the client_id. The logout URI and client ID will be supplied
+    // in the redirect below. But first, we remove the user from the store. If we
+    // do not do this, the app will continue to use stored tokens. Since these are
+    // self-contained tokens, they are not validated with the issuer and will
+    // continue to afford access.
     this.props.userManager.removeUser()
     // redirect the browser to the Cognito logout page. This will cause flicker.
     // Using an iframe is a technique to avoid that, but this is not possible unfortunately
