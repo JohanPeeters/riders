@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import {UserManager} from 'oidc-client'
 import {connect} from 'react-redux'
-import {withRouter, Route} from 'react-router-dom'
+import {Route} from 'react-router-dom'
 import {Grid} from '@material-ui/core'
 import Rides from './components/Rides'
 import Header from './components/Header'
@@ -110,7 +110,7 @@ export class App extends Component {
   componentDidMount() {
     this.listRides()
   }
-  
+
   render() {
     return (
       <div>
@@ -152,4 +152,4 @@ const mapDispatchToProps = {
   resetRides
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
+export default connect(mapStateToProps, mapDispatchToProps)(App)
