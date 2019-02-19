@@ -48,7 +48,7 @@ describe('Header', () => {
   it('shows logout button if there is a context', () => {
     wrapper = mount(
       <Provider store={store}>
-        <AuthenticatedUserContext.Provider value={{sub: 'aaaaaa'}}>
+        <AuthenticatedUserContext.Provider value={{profile: {sub: 'aaaaaa'}}}>
           <Header userManager={new UserManager()} addRide={mockAddRide}/>
         </AuthenticatedUserContext.Provider>
       </Provider>

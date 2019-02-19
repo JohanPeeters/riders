@@ -141,6 +141,10 @@ class Header extends Component {
     this.hideMenu()
   }
 
+  isLoggedIn = () => (
+    Boolean(this.context && this.context.profile)
+  )
+
   render() {
     const {classes} = this.props
     return (
@@ -151,15 +155,15 @@ class Header extends Component {
               <MenuIcon />
             </IconButton>
             <Menu open={this.state.showMenu} anchorEl={this.state.anchorEl} onClose={this.hideMenu}>
-              <MenuItem onClick={this.openAddRideDialog} disabled={!Boolean(this.context)}>Add ride</MenuItem>
+              <MenuItem onClick={this.openAddRideDialog} disabled={!this.isLoggedIn()}>Add ride</MenuItem>
               <MenuItem onClick={this.allRides}>All rides</MenuItem>
-              <MenuItem onClick={this.myRides} disabled={!Boolean(this.context)}>My rides</MenuItem>
+              <MenuItem onClick={this.myRides} disabled={!this.isLoggedIn()}>My rides</MenuItem>
             </Menu>
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Ride Sharing
             </Typography>
-            <Button color='inherit' onClick={Boolean(this.context)?this.logout:this.login}>
-              {Boolean(this.context)?'Logout':'Login'}
+            <Button color='inherit' onClick={this.isLoggedIn()?this.logout:this.login}>
+              {this.isLoggedIn()?'Logout':'Login'}
             </Button>
           </Toolbar>
         </AppBar>
