@@ -16,7 +16,6 @@ const config = {
   authority: process.env.REACT_APP_ISSUER,
   client_id: process.env.REACT_APP_CLIENT_ID,
   redirect_uri: `${window.origin}/callback`,
-  silent_redirect_uri: `${window.origin}/callback`,
   response_type: 'code',
   // ideally, we would like to get access tokens with only the scopes needed for a specific request.
   // Our client library scuppers that plan.
