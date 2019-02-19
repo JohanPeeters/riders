@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuIcon from '@material-ui/icons/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import {showAll, showMine, add} from '../actions'
+import {showAll, showMine, notify, add} from '../actions'
 import AuthenticatedUserContext from '../AuthenticatedUserContext'
 import EditRideDialog from './EditRideDialog'
 
@@ -184,6 +184,7 @@ Header.propTypes = {
 const mapDispatchToProps = {
   showAll,
   showMine,
+  notify,
   add
 }
 
