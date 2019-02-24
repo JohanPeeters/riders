@@ -79,7 +79,7 @@ class RideComponent extends Component {
         this.props.update(ride)
       })
       .catch(err => {
-        this.props.notify(`cannot delete - ${err.response.data.message}`)
+        this.props.notify(`cannot update - ${err.response.data.message}`)
       })
   }
 
