@@ -20,7 +20,6 @@ export class Callback extends React.Component {
 }
 
 Callback.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   exchangeCodeForToken: PropTypes.func.isRequired
 }
