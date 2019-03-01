@@ -135,6 +135,18 @@ export class App extends Component {
           this.props.notify(`cannot retrieve rides - ${err}`)
       })
 
+  exchangeCodeForToken = () => {
+    this.userManager.signinRedirectCallback(window.location)
+      .then(user => {
+      })
+      .catch(error => {
+        this.props.notify(`Login failed - ${error}`)
+      })
+      // I would have liked to use `finally` here, but some pretty mainstream
+      // browsers do not support it yet. Neither does Node 8.12.
+      this.userManager.clearStaleState()
+  }
+
   componentDidMount() {
     this.listRides()
   }
@@ -155,7 +167,7 @@ export class App extends Component {
           </AuthenticatedUserContext.Provider>
         }/>
         <Route path='/callback' render={props => (
-          <Callback {...props} userManager={this.userManager}/>
+          <Callback {...props} exchangeCodeForToken={this.exchangeCodeForToken}/>
         )}/>
         <ErrorMessage/>
       </div>
