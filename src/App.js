@@ -96,6 +96,34 @@ export class App extends Component {
       }
   }
 
+  login = () => {
+    this.userManager.signinRedirect()
+  }
+
+  logout = () => {
+    // the most logical implementation would be
+    // this.props.userManager.signoutRedirect()
+    // unfortunately this does not work because the query parameters Cognito
+    // expects are not sent by oidc-client.
+    // Without arguments, as it is being called here, oidc-client sends the
+    // id_token in a parameter named id_token_hint.
+    // By judiciously adding parameters, it can be arranged to also send state and
+    // post_logout_redirect_uri. The latter could have been useful since Cognito
+    // expects a parameter `logout_uri` with the same semantics.
+    // It also expects the client_id. The logout URI and client ID will be supplied
+    // in the redirect below. But first, we remove the user from the store. If we
+    // do not do this, the app will continue to use stored tokens. Since these are
+    // self-contained tokens, they are not validated with the issuer and will
+    // continue to afford access.
+    this.userManager.removeUser()
+    // redirect the browser to the Cognito logout page. This will cause flicker.
+    // Using an iframe is a technique to avoid that, but this is not possible unfortunately
+    // since Cognito serves all its responses with X-Frame-Option DENY.
+    // In the response to the request below Cognito effectively cancels the browser session
+    // by setting the session cookie (cognito) to expire immediately.
+    window.location.href = `${process.env.REACT_APP_AS_ENDPOINTS}/logout?client_id=${process.env.REACT_APP_CLIENT_ID}&logout_uri=${window.origin}`
+  }
+
   listRides = () =>
     axios(listRidesConfig)
       .then(
@@ -117,7 +145,8 @@ export class App extends Component {
         <Route path='/' render={() =>
           <AuthenticatedUserContext.Provider value={this.state.user}>
             <Header
-              userManager={this.userManager}
+              login={this.login}
+              logout={this.logout}
               addRide={this.openAddRideDialog}
             />
             <Grid container justify='center'>

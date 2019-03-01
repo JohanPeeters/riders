@@ -4,18 +4,9 @@ import configureStore from 'redux-mock-store'
 import {Provider} from 'react-redux'
 import Header from '../components/Header'
 import AuthenticatedUserContext from '../AuthenticatedUserContext'
-import {UserManager} from 'oidc-client'
 
-const mockSigninRedirect = jest.fn()
-const mockSignoutRedirect = jest.fn()
 const mockAddRide = jest.fn()
 jest.mock('oidc-client')
-UserManager.mockImplementation(() => {
-      return {
-        signinRedirect: mockSigninRedirect,
-        signoutRedirect: mockSignoutRedirect
-      }
-    })
 const middlewares = []
 const store = configureStore(middlewares)()
 
@@ -25,7 +16,7 @@ describe('Header', () => {
     wrapper = mount(
       <Provider store={store}>
         <AuthenticatedUserContext.Provider value={null}>
-          <Header userManager={new UserManager()} addRide={mockAddRide}/>
+          <Header login={e => {}} logout={e => {}} addRide={mockAddRide}/>
         </AuthenticatedUserContext.Provider>
       </Provider>
     )
@@ -37,7 +28,7 @@ describe('Header', () => {
     wrapper = mount(
       <Provider store={store}>
         <AuthenticatedUserContext.Provider value={undefined}>
-          <Header userManager={new UserManager()} addRide={mockAddRide}/>
+          <Header login={e => {}} logout={e => {}} addRide={mockAddRide}/>
         </AuthenticatedUserContext.Provider>
       </Provider>
     )
@@ -49,7 +40,7 @@ describe('Header', () => {
     wrapper = mount(
       <Provider store={store}>
         <AuthenticatedUserContext.Provider value={{profile: {sub: 'aaaaaa'}}}>
-          <Header userManager={new UserManager()} addRide={mockAddRide}/>
+          <Header login={e => {}} logout={e => {}} addRide={mockAddRide}/>
         </AuthenticatedUserContext.Provider>
       </Provider>
     )
