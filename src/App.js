@@ -51,12 +51,12 @@ export class App extends Component {
         .then(user => {
           // if no user is found, oidc-client returns null
           // Rejecting the promise would have been more elegant
-          if (user)
+          if (user && !user.expired) {
             // missing check: has token expired?
             this.setState({
               user: user
             })
-          else {
+          } else {
             // here we want to check whether there is a session with the OP.
             // UserManager has a method for this: querySessionStatus.
             // This method sends an authorization request with prompt=none.
