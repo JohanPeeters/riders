@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Riders",
+  "name": "Ride-sharing browser-based app",
   "icons": [
     {
       "src": "favicon.ico",
