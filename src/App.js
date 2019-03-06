@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import {Log, UserManager} from 'oidc-client'
+import {WebStorageStateStore, Log, UserManager} from 'oidc-client'
 import {connect} from 'react-redux'
 import {Route} from 'react-router-dom'
 import {Grid} from '@material-ui/core'
@@ -11,9 +11,10 @@ import ErrorMessage from './components/ErrorMessage'
 import Callback from './components/Callback'
 import {notify, resetRides} from './actions'
 import AuthenticatedUserContext from './AuthenticatedUserContext'
+import RideSharingStore from './helpers/RideSharingStore'
 
-// Log.level = Log.DEBUG
-// Log.logger = console
+Log.level = Log.DEBUG
+Log.logger = console
 
 const config = {
   authority: process.env.REACT_APP_ISSUER,
@@ -33,7 +34,7 @@ const config = {
   // Cognito responds with a new access and ID token. No new refresh token is issued,
   // in spite of advice in the BCP.
   automaticSilentRenew: true,
-//  userStore: new WebStorageStateStore({store: new RideSharingStore()}),
+  userStore: new WebStorageStateStore({store: new RideSharingStore()}),
   // metadata: {
   //   issuer: process.env.REACT_APP_ISSUER,
   //   end_session_endpoint: 'https://ride-sharing.eu.auth0.com/v2/logout',
@@ -64,7 +65,13 @@ export class App extends Component {
           // Rejecting the promise would have been more elegant
           if (user && !user.expired) {
             this.setState({
-              user: user
+              // `user` contains all the tokens returned from the AS.
+              // It also contains a `profile` field which is the parsed ID token.
+              // We only need the access token and profile.
+              user: {
+                access_token: user.access_token,
+                profile: user.profile
+              }
             })
           }
         })
@@ -82,10 +89,16 @@ export class App extends Component {
       // Register for events.
       this.userManager.events.addSilentRenewError((event) => {
         this.props.notify(`cannot silently renew login - ${JSON.stringify(event)}`)
+        this.setState({
+          user: undefined
+        })
       })
       this.userManager.events.addUserLoaded((event) => {
         this.setState({
-          user: event
+          user: {
+            access_token: event.access_token,
+            profile: event.profile
+          }
         })
       })
       this.userManager.events.addUserUnloaded((event) => {

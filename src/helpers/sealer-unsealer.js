@@ -12,7 +12,7 @@ function makeSealerUnsealerPair() {
       const unseal = box => {
         var result = optUnseal(box);
         if (result === null) {
-          // not sure why traditionally the box terminology is adopted. I will
+          // not sure why traditionally the box terminology was adopted. I will
           // keep it for now, but in communication to the client I use the term
           // 'key' as that should require less explaining and hand-waving.
           throw new Error("Key does not fit");
