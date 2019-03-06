@@ -34,7 +34,7 @@ const config = {
   // Cognito responds with a new access and ID token. No new refresh token is issued,
   // in spite of advice in the BCP.
   automaticSilentRenew: true,
-  userStore: new WebStorageStateStore({store: new RideSharingStore()}),
+  // userStore: new WebStorageStateStore({store: new RideSharingStore()}),
   // metadata: {
   //   issuer: process.env.REACT_APP_ISSUER,
   //   end_session_endpoint: 'https://ride-sharing.eu.auth0.com/v2/logout',
