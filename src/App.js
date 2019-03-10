@@ -9,9 +9,9 @@ import Rides from './components/Rides'
 import Header from './components/Header'
 import ErrorMessage from './components/ErrorMessage'
 import Callback from './components/Callback'
-import {notify, resetRides} from './actions'
-import AuthenticatedUserContext from './AuthenticatedUserContext'
+import {notify, resetRides, login, logout} from './actions'
 import RideSharingStore from './helpers/RideSharingStore'
+import RideSharingMenu from './components/RideSharingMenu'
 
 Log.level = Log.DEBUG
 Log.logger = console
@@ -33,8 +33,11 @@ const config = {
   // client_id: ...
   // Cognito responds with a new access and ID token. No new refresh token is issued,
   // in spite of advice in the BCP.
-  automaticSilentRenew: true,
-  // userStore: new WebStorageStateStore({store: new RideSharingStore()}),
+  // Flaky, so we are making an explicit call when the tokens are expiring.
+  // automaticSilentRenew: true
+  //
+  // Store tokens in memory to mitigate XSS attacks
+  userStore: new WebStorageStateStore({store: new RideSharingStore()}),
   // metadata: {
   //   issuer: process.env.REACT_APP_ISSUER,
   //   end_session_endpoint: 'https://ride-sharing.eu.auth0.com/v2/logout',
@@ -64,15 +67,22 @@ export class App extends Component {
           // if no user is found, oidc-client returns null
           // Rejecting the promise would have been more elegant
           if (user && !user.expired) {
-            this.setState({
+            this.props.login({
               // `user` contains all the tokens returned from the AS.
               // It also contains a `profile` field which is the parsed ID token.
               // We only need the access token and profile.
-              user: {
-                access_token: user.access_token,
-                profile: user.profile
-              }
+              access_token: user.access_token,
+              profile: user.profile
             })
+            // this.setState({
+            //   // `user` contains all the tokens returned from the AS.
+            //   // It also contains a `profile` field which is the parsed ID token.
+            //   // We only need the access token and profile.
+            //   user: {
+            //     access_token: user.access_token,
+            //     profile: user.profile
+            //   }
+            // })
           }
         })
         .catch(err => {
@@ -87,28 +97,43 @@ export class App extends Component {
       // userSignedOut [1.1.0]: Raised when the user's sign-in status at the OP has changed.
       //
       // Register for events.
-      this.userManager.events.addSilentRenewError((event) => {
-        this.props.notify(`cannot silently renew login - ${JSON.stringify(event)}`)
-        this.setState({
-          user: undefined
+      this.userManager.events.addAccessTokenExpiring(event => {
+        Log.debug('access token is expiring - doing a silent signin')
+        this.refreshTokens()
+      })
+      this.userManager.events.addAccessTokenExpired(event => {
+        Log.debug('access token expired - trying to refresh by doing a silent signin')
+        this.refreshTokens()
+      })
+      this.userManager.events.addUserLoaded(event => {
+        this.props.login({
+          // `user` contains all the tokens returned from the AS.
+          // It also contains a `profile` field which is the parsed ID token.
+          // We only need the access token and profile.
+          access_token: event.access_token,
+          profile: event.profile
         })
       })
-      this.userManager.events.addUserLoaded((event) => {
-        this.setState({
-          user: {
-            access_token: event.access_token,
-            profile: event.profile
-          }
-        })
-      })
-      this.userManager.events.addUserUnloaded((event) => {
-        this.setState({
-          user: undefined
-        })
+      this.userManager.events.addUserUnloaded(event => {
+        this.props.logout()
       })
       this.state = {
         rides: []
       }
+  }
+
+  refreshTokens = () => {
+    // send refresh token to obtain new access and id tokens. Cognito does *not*
+    // issue a new refresh token.
+    this.userManager.signinSilent()
+    .then(user => {
+      // No need to do anything since userLoaded will be fired
+    })
+    .catch(err => {
+      // remove the user
+      this.userManager.removeUser()
+      this.props.logout()
+    })
   }
 
   login = () => {
@@ -187,19 +212,18 @@ export class App extends Component {
   }
 
   render() {
+    const menu = (<RideSharingMenu/>)
     return (
       <div>
+        <Header
+          login={this.login}
+          logout={this.logout}
+          menu={menu}
+        />
         <Route path='/' render={() =>
-          <AuthenticatedUserContext.Provider value={this.state.user}>
-            <Header
-              login={this.login}
-              logout={this.logout}
-              addRide={this.openAddRideDialog}
-            />
             <Grid container justify='center'>
               <Rides rides={this.props.rides.filter(this.props.filter)}/>
             </Grid>
-          </AuthenticatedUserContext.Provider>
         }/>
         <Route path='/callback' render={props => (
           <Callback {...props} exchangeCodeForToken={this.exchangeCodeForToken}/>
@@ -223,7 +247,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   notify,
-  resetRides
+  resetRides,
+  login,
+  logout
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

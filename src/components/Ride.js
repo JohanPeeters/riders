@@ -5,7 +5,7 @@ import {withStyles} from '@material-ui/core/styles'
 import {Delete ,ExpandMore, Edit} from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {update, remove, notify} from '../actions'
+import {updateRide, removeRide, notify} from '../actions'
 import AuthenticatedUserContext from '../AuthenticatedUserContext'
 import EditRideDialog from './EditRideDialog'
 import {safeContact} from '../helpers/sanitize'
@@ -43,12 +43,12 @@ class RideComponent extends Component {
       method: 'delete',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.context.access_token}`
+        'Authorization': `Bearer ${this.props.user.access_token}`
       }
     }
     axios(config)
       .then(res => {
-        this.props.remove(this.props.ride)
+        this.props.removeRide(this.props.ride)
       })
       .catch(err => {
         this.props.notify(`cannot delete - ${err.response.data.message}`)
@@ -70,13 +70,13 @@ class RideComponent extends Component {
       method: 'put',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.context.access_token}`
+        'Authorization': `Bearer ${this.props.user.access_token}`
       },
       data: ride
     }
     axios(config)
       .then(res => {
-        this.props.update(ride)
+        this.props.updateRide(ride)
       })
       .catch(err => {
         this.props.notify(`cannot update - ${err.response.data.message}`)
@@ -104,14 +104,14 @@ class RideComponent extends Component {
         <Collapse in={this.state.expanded}>
           <CardActions>
             <IconButton
-              disabled={!(this.context && this.context.profile && this.context.profile.sub === this.props.ride.sub)}
+              disabled={!(this.props.user && this.props.user.profile && this.props.user.profile.sub === this.props.ride.sub)}
               onClick={e => this.setState({
                 editing: true
               })}>
               <Edit/>
             </IconButton>
             <IconButton
-              disabled={!(this.context && this.context.profile && this.context.profile.sub === this.props.ride.sub)}
+              disabled={!(this.props.user && this.props.user.profile && this.props.user.profile.sub === this.props.ride.sub)}
               id={`delete`}
               onClick={this.handleDeleteClick}>
               <Delete/>
@@ -138,21 +138,26 @@ RideComponent.propTypes = {
   ride: PropTypes.shape({
     id: PropTypes.string.isRequired,
     from: PropTypes.string.isRequired,
-    to: PropTypes.string.isRequired
+    to: PropTypes.string.isRequired,
+    contact: PropTypes.string
   }).isRequired,
   classes: PropTypes.object.isRequired,
-  remove: PropTypes.func.isRequired,
+  removeRide: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired,
-  update: PropTypes.func.isRequired
+  updateRide: PropTypes.func.isRequired
 }
 
+const mapStateToProps = state => ({
+  user: state.user
+})
+
 const mapDispatchToProps = {
-  remove,
+  removeRide,
   notify,
-  update
+  updateRide
 }
 
 export const Ride = withStyles(styles)(RideComponent)
 
 
-export default connect(null, mapDispatchToProps)(Ride)
+export default connect(mapStateToProps, mapDispatchToProps)(Ride)

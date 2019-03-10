@@ -47,8 +47,20 @@ const filter = (state = ride => true, action) => {
   }
 }
 
+const user = (state = null, action) => {
+  switch (action.type) {
+    case 'LOG_IN':
+      return action.user
+    case 'LOG_OUT':
+      return undefined
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   errorMessage: error,
   rides,
-  filter
+  filter,
+  user
 })

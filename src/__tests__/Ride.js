@@ -1,10 +1,11 @@
 import React from 'react'
 import axios from 'axios'
 import {shallow, mount} from 'enzyme'
+import {createStore} from 'redux'
 import {Provider} from 'react-redux'
-import configureStore from 'redux-mock-store'
 import ConnectedRide, {Ride} from '../components/Ride'
-import AuthenticatedUserContext from '../AuthenticatedUserContext'
+import reducers from '../reducers'
+import {login} from '../actions'
 
 
 jest.mock('axios')
@@ -20,7 +21,7 @@ describe('Ride', () => {
 
   beforeEach(async () => {
     wrapper = await shallow(
-        <Ride ride={ride1} notify={e => {}} remove={e => {}} update={e => {}}/>
+        <Ride ride={ride1} notify={e => {}} removeRide={e => {}} updateRide={e => {}}/>
     )
   })
 
@@ -44,15 +45,16 @@ describe('Ride', () => {
 
 describe('ConnectedRide', () => {
 
-  const middlewares = []
-  const store = configureStore(middlewares)()
+  const store = createStore(reducers)
 
   beforeEach(async () => {
+    store.dispatch(login({
+      access_token: 'udsbfuebd',
+      profile: {}
+    }))
     wrapper = await mount(
       <Provider store={store}>
-        <AuthenticatedUserContext.Provider value={{profile: {}}}>
-          <ConnectedRide ride={ride1}/>
-        </AuthenticatedUserContext.Provider>
+        <ConnectedRide ride={ride1}/>
       </Provider>
     )
   })
@@ -60,7 +62,6 @@ describe('ConnectedRide', () => {
   afterEach(() => {
     // Clear all instances and calls to constructor and all methods:
     axios.mockClear()
-    store.clearActions()
   })
 
   it('calls the API when the delete button is pressed', () => {
@@ -72,7 +73,6 @@ describe('ConnectedRide', () => {
   it('notifies the store if a delete action returns an error', async () => {
     wrapper.setProps({disabled: false})
     await wrapper.find(`#delete`).filter('IconButton').simulate('click')
-    const actions = await store.getActions()
-    expect(actions).toEqual([{type: 'NOTIFY_ERROR', errorMessage: `cannot delete - ${errorMsg}`}])
+    expect(store.getState().errorMessage).toEqual(`cannot delete - ${errorMsg}`)
   })
 })

@@ -9,15 +9,15 @@ export const resetRides = rides => ({
   type: 'SET',
   rides: rides
 })
-export const remove = ride => ({
+export const removeRide = ride => ({
   type: 'REMOVE',
   ride: ride
 })
-export const add = ride => ({
+export const addRide = ride => ({
   type: 'ADD',
   ride: ride
 })
-export const update = ride => ({
+export const updateRide = ride => ({
   type: 'UPDATE',
   ride: ride
 })
@@ -27,4 +27,11 @@ export const showAll = () => ({
 export const showMine = sub => ({
   type: 'MINE',
   sub: sub
+})
+export const login = user => ({
+  type: 'LOG_IN',
+  user: user
+})
+export const logout = () => ({
+  type: 'LOG_OUT'
 })
