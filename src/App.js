@@ -183,8 +183,6 @@ export class App extends Component {
       accessTokenKey: accessTokenKey,
       profileKey: profileKey
     })
-    console.log(`access token: ${vault.unseal(accessTokenKey)}`)
-    console.log(`profile: ${JSON.stringify(vault.unseal(profileKey))}`)
   }
 
   listRides = () =>
