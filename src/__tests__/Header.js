@@ -1,6 +1,5 @@
 import React from 'react'
 import {mount} from 'enzyme'
-// import configureStore from 'redux-mock-store'
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
 import Header from '../components/Header'
@@ -22,8 +21,6 @@ describe('Header', () => {
   })
   it('shows logout button if there is a user in the store', () => {
     store.dispatch(login({
-      access_token: 'udsbfuebd',
-      profile: {}
     }))
     wrapper = mount(
       <Provider store={store}>

@@ -12,7 +12,7 @@ jest.mock('axios')
 
 let wrapper
 const errorMsg = 'access denied'
-const ride1 = {from: "Antwerp", to: "Leuven", id: "aaaaaa"}
+const ride1 = {from: "Antwerp", to: "Leuven", id: "aaaaaa", sub: '007'}
 const ride2 = {from: 'a', to: 'b', id: "bbbbbbb"}
 
 axios.mockRejectedValue({response: {data: {message: errorMsg}}})
@@ -48,13 +48,10 @@ describe('ConnectedRide', () => {
   const store = createStore(reducers)
 
   beforeEach(async () => {
-    store.dispatch(login({
-      access_token: 'udsbfuebd',
-      profile: {}
-    }))
+    store.dispatch(login({unseal: key => ({sub: '007'})}))
     wrapper = await mount(
       <Provider store={store}>
-        <ConnectedRide ride={ride1}/>
+        <ConnectedRide ride={ride1} profileKey={{}}/>
       </Provider>
     )
   })
@@ -65,13 +62,11 @@ describe('ConnectedRide', () => {
   })
 
   it('calls the API when the delete button is pressed', () => {
-    wrapper.setProps({disabled: false})
     wrapper.find('#delete').filter('IconButton').simulate('click')
     expect(axios).toHaveBeenCalled()
   })
 
   it('notifies the store if a delete action returns an error', async () => {
-    wrapper.setProps({disabled: false})
     await wrapper.find(`#delete`).filter('IconButton').simulate('click')
     expect(store.getState().errorMessage).toEqual(`cannot delete - ${errorMsg}`)
   })

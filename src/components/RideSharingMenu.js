@@ -33,7 +33,7 @@ class RideSharingMenu extends Component {
       method: 'post',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.props.user.access_token}`
+        'Authorization': `Bearer ${this.props.user.unseal(this.props.accessTokenKey)}`
       },
       data: ride
     }
@@ -41,7 +41,7 @@ class RideSharingMenu extends Component {
       .then(
         res => {
           console.log(`received id ${res.data} for ride`)
-          ride.sub = this.props.user.profile.sub
+          ride.sub = this.props.user.unseal(this.props.profileKey).sub
           ride.id = res.data
           this.props.addRide(ride)
       })
@@ -85,7 +85,7 @@ class RideSharingMenu extends Component {
   }
 
   myRides = event => {
-    this.props.showMine(this.props.user.profile.sub)
+    this.props.showMine(this.props.user.unseal(this.props.profileKey).sub)
     this.hideMenu()
   }
 

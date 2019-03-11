@@ -54,7 +54,7 @@ Header.propTypes = {
   classes: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
-  menu: PropTypes.element.isRequired
+  menu: PropTypes.element.isRequired,
 }
 
 const mapStateToProps = state => ({

@@ -1,4 +1,4 @@
-function makeSealerUnsealerPair() {
+const makeSealerUnsealerPair = () => {
       var boxValues = new WeakMap();
 
       const seal = value => {
@@ -7,7 +7,7 @@ function makeSealerUnsealerPair() {
         return box;
       }
       const optUnseal = box => {
-        return boxValues.has(box) ? [boxValues.get(box)] : null;
+        return boxValues.has(box) ? boxValues.get(box) : null;
       }
       const unseal = box => {
         var result = optUnseal(box);
@@ -17,7 +17,7 @@ function makeSealerUnsealerPair() {
           // 'key' as that should require less explaining and hand-waving.
           throw new Error("Key does not fit");
         } else {
-          return result[0];
+          return result;
         }
       }
       return Object.freeze({
@@ -27,4 +27,4 @@ function makeSealerUnsealerPair() {
       });
     }
 
-  export default makeSealerUnsealerPair()
+  export default makeSealerUnsealerPair

@@ -6,7 +6,6 @@ import {Delete ,ExpandMore, Edit} from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {updateRide, removeRide, notify} from '../actions'
-import AuthenticatedUserContext from '../AuthenticatedUserContext'
 import EditRideDialog from './EditRideDialog'
 import {safeContact} from '../helpers/sanitize'
 
@@ -19,8 +18,6 @@ const styles = theme => ({
 })
 
 class RideComponent extends Component {
-
-  static contextType = AuthenticatedUserContext
 
   constructor(props) {
     super(props)
@@ -37,13 +34,14 @@ class RideComponent extends Component {
   }
 
   handleDeleteClick = e => {
+    console.log('handleDeleteClick called')
     const config = {
       baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
       url: `rides/${this.props.ride.id}`,
       method: 'delete',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.props.user.access_token}`
+        'Authorization': `Bearer ${this.props.user.unseal(this.props.accessTokenKey)}`
       }
     }
     axios(config)
@@ -70,7 +68,7 @@ class RideComponent extends Component {
       method: 'put',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.props.user.access_token}`
+        'Authorization': `Bearer ${this.props.user.unseal(this.props.accessTokenKey)}`
       },
       data: ride
     }
@@ -81,6 +79,12 @@ class RideComponent extends Component {
       .catch(err => {
         this.props.notify(`cannot update - ${err.response.data.message}`)
       })
+  }
+
+  isOwner = user => {
+    return user && this.props.profileKey ?
+      user.unseal(this.props.profileKey).sub === this.props.ride.sub
+      :false
   }
 
   render() {
@@ -104,14 +108,14 @@ class RideComponent extends Component {
         <Collapse in={this.state.expanded}>
           <CardActions>
             <IconButton
-              disabled={!(this.props.user && this.props.user.profile && this.props.user.profile.sub === this.props.ride.sub)}
+              disabled={!(this.isOwner(this.props.user))}
               onClick={e => this.setState({
                 editing: true
               })}>
               <Edit/>
             </IconButton>
             <IconButton
-              disabled={!(this.props.user && this.props.user.profile && this.props.user.profile.sub === this.props.ride.sub)}
+              disabled={!(this.isOwner(this.props.user))}
               id={`delete`}
               onClick={this.handleDeleteClick}>
               <Delete/>
@@ -144,7 +148,9 @@ RideComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   removeRide: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired,
-  updateRide: PropTypes.func.isRequired
+  updateRide: PropTypes.func.isRequired,
+  accessTokenKey: PropTypes.object,
+  profileKey: PropTypes.object
 }
 
 const mapStateToProps = state => ({
