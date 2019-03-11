@@ -109,10 +109,11 @@ export class App extends Component {
         props.logout()
       })
       this.login = () => {
-        // It is tempting to first try whether the user still has a session with the AS with
+        // I would like to first try whether the user still has a session with the AS with
         // this.userManager.querySessionStatus()
-        // However, this does not retrieve the access token, only the id token:
+        // However, this is pointless as it does not retrieve the access token, only the id token:
         // scope parameter is hard-coded to `openid`.
+        // This could be changed.
         userManager.signinRedirect()
       }
       this.logout = () => {
