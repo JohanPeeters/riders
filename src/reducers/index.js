@@ -52,7 +52,7 @@ const user = (state = null, action) => {
     case 'LOG_IN':
       return action.user
     case 'LOG_OUT':
-      return undefined
+      return null
     default:
       return state
   }
