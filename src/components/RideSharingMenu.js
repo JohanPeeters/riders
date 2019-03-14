@@ -40,7 +40,6 @@ class RideSharingMenu extends Component {
     axios(config)
       .then(
         res => {
-          console.log(`received id ${res.data} for ride`)
           ride.sub = this.props.user.unseal(this.props.profileKey).sub
           ride.id = res.data
           this.props.addRide(ride)
