@@ -154,7 +154,8 @@ RideComponent.propTypes = {
   notify: PropTypes.func.isRequired,
   updateRide: PropTypes.func.isRequired,
   accessTokenKey: PropTypes.object,
-  profileKey: PropTypes.object
+  profileKey: PropTypes.object,
+  user: PropTypes.object
 }
 
 const mapStateToProps = state => ({
