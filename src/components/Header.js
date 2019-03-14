@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
@@ -21,30 +21,27 @@ const styles = {
   },
 }
 
-class Header extends Component {
+const Header = props => {
 
-  isLoggedIn = () => (
-    Boolean(this.props.user)
+  const isLoggedIn = () => (
+    Boolean(props.user)
   )
-
-  render() {
-    const {classes} = this.props
-    return (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            {this.props.menu}
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              Ride Sharing
-            </Typography>
-            <Button color='inherit' onClick={this.isLoggedIn()?this.props.logout:this.props.login}>
-              {this.isLoggedIn()?'Logout':'Login'}
-            </Button>
-          </Toolbar>
-        </AppBar>
-      </div>
-    )
-  }
+  const {classes} = props
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          {props.menu}
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            Ride Sharing
+          </Typography>
+          <Button color='inherit' onClick={isLoggedIn()?props.logout:props.login}>
+            {isLoggedIn()?'Logout':'Login'}
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </div>
+  )
 }
 
 Header.propTypes = {
