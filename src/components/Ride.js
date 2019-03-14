@@ -34,7 +34,6 @@ class RideComponent extends Component {
   }
 
   handleDeleteClick = e => {
-    console.log('handleDeleteClick called')
     const config = {
       baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
       url: `rides/${this.props.ride.id}`,
