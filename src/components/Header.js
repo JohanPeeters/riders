@@ -7,7 +7,6 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import {} from '../actions'
-import AuthenticatedUserContext from '../AuthenticatedUserContext'
 
 const styles = {
   root: {
@@ -23,8 +22,6 @@ const styles = {
 }
 
 class Header extends Component {
-
-  static contextType = AuthenticatedUserContext
 
   isLoggedIn = () => (
     Boolean(this.props.user)
