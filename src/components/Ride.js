@@ -88,6 +88,8 @@ class RideComponent extends Component {
       } catch {
         return false
       }
+    } else {
+      return false
     }
   }
 

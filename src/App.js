@@ -38,26 +38,19 @@ export class App extends Component {
         // The oidc-client's UserManager takes a one-shot scope configuration.
         scope: 'openid rides/create rides/delete rides/update',
         loadUserInfo: false,
-        // triggers usermanager to send a request to the token endpoint for new tokens.
+        // automaticSilentRenew: true,
+        // The above option should trigger the usermanager to send a request to
+        // the token endpoint for new tokens when the old ones are about to expire.
         // The request sends form data with:
         // refresh_token: ...
         // grant_type: refresh_token
         // client_id: ...
         // Cognito responds with a new access and ID token. No new refresh token is issued,
         // in spite of advice in the BCP.
-        // Flaky, so we are making an explicit call when the tokens are expiring.
-        // automaticSilentRenew: true
+        // It is also flaky, so we are making an explicit call on token expiry.
         //
         // Store tokens in memory to mitigate XSS attacks
         userStore: new WebStorageStateStore({store: new RideSharingStore()}),
-        // metadata: {
-        //   issuer: process.env.REACT_APP_ISSUER,
-        //   end_session_endpoint: 'https://ride-sharing.eu.auth0.com/v2/logout',
-        //   authorization_endpoint: 'https://ride-sharing.eu.auth0.com/authorize',
-        //   jwks_uri: 'https://ride-sharing.eu.auth0.com/.well-known/jwks.json',
-        //   token_endpoint: 'https://ride-sharing.eu.auth0.com/oauth/token',
-        //   post_logout_redirect_uri: window.origin
-        // }
       }
       const userManager =  new UserManager(config)
       const refreshTokens = () => {
@@ -234,6 +227,8 @@ export class App extends Component {
 App.propTypes = {
   notify: PropTypes.func.isRequired,
   resetRides: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   rides: PropTypes.array.isRequired,
   filter: PropTypes.func.isRequired,
 }
