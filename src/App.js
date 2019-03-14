@@ -15,9 +15,6 @@ import RideSharingStore from './helpers/RideSharingStore'
 import RideSharingMenu from './components/RideSharingMenu'
 import makeVault from './helpers/sealer-unsealer'
 
-Log.level = Log.DEBUG
-Log.logger = console
-
 const listRidesConfig = {
   baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
   url: 'rides',
@@ -166,9 +163,7 @@ export class App extends Component {
           // browsers do not support it yet. Neither does Node 8.12.
           userManager.clearStaleState()
       }
-      this.state = {
-        rides: []
-      }
+      this.state = {}
   }
 
   propagateUser = user => {
