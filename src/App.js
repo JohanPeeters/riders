@@ -126,23 +126,11 @@ export class App extends Component {
         // redirecting the browser to the logout page will cause flicker.
         // Using an iframe avoids this flicker, but is not possible
         // with Cognito since it serves all its responses with X-Frame-Option DENY.
-        // Auth0 does not. Therefore an iframe is an option. A simpler approach is
+        // Auth0 does not. Therefore an iframe is an option with Auth0. A simpler approach is
         // to query the logout page with XHR. However, the AS only cancels its session if cookies are sent with the request.
         // Simply adding `withCredentials: true` to the XHR request does not cut it:
-        // the browser does not send the cookies (credentials) as it has not been given assurance from the server that it can do so.
-        // A way to circumvent this is to coax the browser into sending a pre-flight request that hopefully returns CORS headers that allow sending credentials.
-        // One way to do so is by adding one of the headers that would trigger a pre-flight.
-        // Unfortunately, this does not work either since Auth0 does not return a `Access-Control-Allow-Origin` header,
-        // so the browser refuses to send the request after it receives the pre-flight response.
+        // the browser does not send the cookies (credentials) as it has not been given assurance by the server that it can do so.
         // Back to iframes. No support for that from oidc-client. Not going to implement this for now.
-        // TODO
-        // axios({
-        //   baseURL: process.env.REACT_APP_AS_ENDPOINTS,
-        //   url: 'logout',
-        //   params: {
-        //     client_id: process.env.REACT_APP_CLIENT_ID,
-        //   }
-        // })
         window.location.href = `${process.env.REACT_APP_AS_ENDPOINTS}/logout?client_id=${process.env.REACT_APP_CLIENT_ID}&logout_uri=${window.origin}`
       }
       this.exchangeCodeForToken = () => {
