@@ -60,7 +60,7 @@ export class ErrorMessage extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  errorMessage: state.errorMessage
+  errorMessage: state.error
 })
 
 ErrorMessage.propTypes = {

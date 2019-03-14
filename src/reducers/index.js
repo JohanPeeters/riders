@@ -59,7 +59,7 @@ const user = (state = null, action) => {
 }
 
 export default combineReducers({
-  errorMessage: error,
+  error,
   rides,
   filter,
   user
