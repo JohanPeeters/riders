@@ -13,7 +13,7 @@ import Callback from './components/Callback'
 import {notify, resetRides, login, logout} from './actions'
 import RideSharingStore from './helpers/RideSharingStore'
 import RideSharingMenu from './components/RideSharingMenu'
-import makeVault from './helpers/sealer-unsealer'
+import makeVault from './helpers/vault'
 
 const listRidesConfig = {
   baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
@@ -131,6 +131,7 @@ export class App extends Component {
         // Simply adding `withCredentials: true` to the XHR request does not cut it:
         // the browser does not send the cookies (credentials) as it has not been given assurance by the server that it can do so.
         // Back to iframes. No support for that from oidc-client. Not going to implement this for now.
+
         window.location.href = `${process.env.REACT_APP_AS_ENDPOINTS}/logout?client_id=${process.env.REACT_APP_CLIENT_ID}&logout_uri=${window.origin}`
       }
       this.exchangeCodeForToken = () => {
