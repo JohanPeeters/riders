@@ -6,6 +6,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuIcon from '@material-ui/icons/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import EditRideDialog from './EditRideDialog'
+import PropTypes from 'prop-types'
 import {showAll, showMine, notify, refresh} from '../actions'
 import axios from 'axios'
 
@@ -113,15 +114,24 @@ const RideSharingMenu = props => {
   )
 }
 
-  const mapStateToProps = state => ({
-    user: state.user
-  })
+RideSharingMenu.propTypes = {
+  classes: PropTypes.object.isRequired,
+  refresh: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired,
+  showAll: PropTypes.func.isRequired,
+  showMine: PropTypes.func.isRequired,
+  user: PropTypes.object
+}
 
-  const mapDispatchToProps = {
-    showAll,
-    showMine,
-    notify,
-    refresh
-  }
+const mapStateToProps = state => ({
+  user: state.user
+})
 
-  export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(RideSharingMenu))
+const mapDispatchToProps = {
+  showAll,
+  showMine,
+  notify,
+  refresh
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(RideSharingMenu))

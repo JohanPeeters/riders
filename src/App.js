@@ -222,7 +222,7 @@ export const App = props => {
           </Grid>
       }/>
       <Route path='/callback' render={props => (
-        <Callback {...props} exchangeCodeForToken={exchangeCodeForToken}/>
+        <Callback exchangeCodeForToken={exchangeCodeForToken}/>
       )}/>
       <ErrorMessage/>
     </div>

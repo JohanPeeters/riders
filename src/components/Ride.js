@@ -38,7 +38,7 @@ const RideComponent = props => {
     }
     axios(config)
       .then(res => {
-        props.removeRide()
+        props.refresh()
       })
       .catch(err => {
         props.notify(`cannot delete - ${err.response.data.message}`)
@@ -140,9 +140,8 @@ RideComponent.propTypes = {
     contact: PropTypes.string
   }).isRequired,
   classes: PropTypes.object.isRequired,
-  removeRide: PropTypes.func.isRequired,
+  refresh: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired,
-  updateRide: PropTypes.func.isRequired,
   accessTokenKey: PropTypes.object,
   profileKey: PropTypes.object,
   user: PropTypes.object
