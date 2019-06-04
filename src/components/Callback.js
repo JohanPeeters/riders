@@ -1,22 +1,19 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
 
-export class Callback extends React.Component {
-  componentDidMount() {
-    this.props.exchangeCodeForToken()
-    this.stripCode()
-  }
+const Callback = props => {
 
-  stripCode = () => {
-    this.props.history.replace('/')
-  }
+  useEffect(() => {
+    props.exchangeCodeForToken()
+    return () => props.history.replace('/')
+  },
+  [props]
+)
 
-  render() {
-    return (
-      <p></p>
-    );
-  }
+  return (
+    <p></p>
+  )
 }
 
 Callback.propTypes = {

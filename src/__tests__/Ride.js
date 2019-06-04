@@ -33,14 +33,6 @@ describe('Ride', () => {
     expect(wrapper.dive().find({title: 'Antwerp to Leuven'})).not.toExist()
     expect(wrapper.dive().find({title: 'a to b'})).toExist()
   })
-  it('by default is not expanded', () => {
-    expect(wrapper.dive()).toHaveState({expanded: false})
-  })
-  it('expands when the more button is clicked', () => {
-    wrapper = wrapper.dive()
-    wrapper.find('#more').simulate('click')
-    expect(wrapper).toHaveState({expanded: true})
-  })
 })
 
 describe('ConnectedRide', () => {
@@ -64,10 +56,5 @@ describe('ConnectedRide', () => {
   it('calls the API when the delete button is pressed', () => {
     wrapper.find('#delete').filter('IconButton').simulate('click')
     expect(axios).toHaveBeenCalled()
-  })
-
-  it('notifies the store if a delete action returns an error', async () => {
-    await wrapper.find(`#delete`).filter('IconButton').simulate('click')
-    expect(store.getState().errorMessage).toEqual(`cannot delete - ${errorMsg}`)
   })
 })

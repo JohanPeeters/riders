@@ -1,25 +1,14 @@
-export const notify = text => ({
-  type: 'NOTIFY_ERROR',
-  errorMessage: text
-})
+export const notify = text => {
+  return {
+    type: 'NOTIFY_ERROR',
+    errorMessage: text
+}}
 export const clear = () => ({
   type: 'CLEAR_ERROR'
 })
 export const resetRides = rides => ({
   type: 'SET',
   rides: rides
-})
-export const removeRide = ride => ({
-  type: 'REMOVE',
-  ride: ride
-})
-export const addRide = ride => ({
-  type: 'ADD',
-  ride: ride
-})
-export const updateRide = ride => ({
-  type: 'UPDATE',
-  ride: ride
 })
 export const showAll = () => ({
   type: 'ALL'
@@ -34,4 +23,10 @@ export const login = user => ({
 })
 export const logout = () => ({
   type: 'LOG_OUT'
+})
+export const refresh = () => ({
+  type: 'REFRESH'
+})
+export const refreshing = () => ({
+  type: 'REFRESHING'
 })

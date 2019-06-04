@@ -9,6 +9,7 @@
     seal: value => {...},
     unseal: key => (...),
     ...
-  }
+  },
+  fresh: true
 }
 ```

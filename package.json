@@ -1,17 +1,18 @@
 {
   "name": "riders",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^3.8.3",
+    "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
-    "axios": "^0.18.0",
-    "oidc-client": "^1.6.1",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-redux": "^6.0.0",
+    "axios": "^0.18.1",
+    "eslint-plugin-react": "^7.13.0",
+    "oidc-client": "^1.7.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.5",
+    "react-scripts": "^3.0.1",
     "redux": "^4.0.1"
   },
   "scripts": {
@@ -32,11 +33,10 @@
   ],
   "devDependencies": {
     "enzyme": "^3.8.0",
-    "enzyme-adapter-react-16": "^1.7.1",
-    "eslint-plugin-react": "^7.12.4",
-    "jest-enzyme": "^7.0.1",
+    "enzyme-adapter-react-16": "^1.13.2",
+    "jest-enzyme": "^7.0.2",
     "redux-mock-store": "^1.5.3",
-    "source-map-explorer": "^1.6.0",
+    "source-map-explorer": "^1.8.0",
     "uuid": "^3.3.2"
   }
 }

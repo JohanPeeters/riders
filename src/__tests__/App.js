@@ -8,7 +8,7 @@ import App from '../App'
 
 jest.mock('axios')
 const middlewares = []
-const store = configureStore(middlewares)({errorMessage: '', rides: [], filter: ride => true})
+const store = configureStore(middlewares)({errorMessage: '', rides: [], uptodate: false, filter: ride => true})
 
 describe('App', () => {
 
@@ -41,10 +41,10 @@ describe('App', () => {
     })
     it('places the retrieved rides in the store', () => {
       const actions = store.getActions()
-      expect(actions.length).toBe(1)
-      expect(actions[0].type).toBe('SET')
-      expect(actions[0].rides).toContain(ride1)
-      expect(actions[0].rides).toContain(ride2)
+      expect(actions.length).toBe(2)
+      expect(actions[1].type).toBe('SET')
+      expect(actions[1].rides).toContain(ride1)
+      expect(actions[1].rides).toContain(ride2)
     })
   })
   describe('when rides cannot be retrieved', () => {
@@ -70,7 +70,7 @@ describe('App', () => {
 
     it('notifies the store', async () => {
       const actions = await store.getActions()
-      expect(actions).toEqual([{type: 'NOTIFY_ERROR', errorMessage: `cannot retrieve rides - ${errorMsg}`}])
+      expect(actions).toEqual([{type: 'REFRESHING'}, {type: 'NOTIFY_ERROR', errorMessage: `cannot retrieve rides - ${errorMsg}`}])
     })
   })
 })
