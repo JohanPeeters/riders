@@ -154,18 +154,6 @@ export const App = props => {
     window.location.href = `${process.env.REACT_APP_AS_ENDPOINTS}/logout?client_id=${process.env.REACT_APP_CLIENT_ID}&logout_uri=${window.origin}`
   }
 
-  const exchangeCodeForToken = () => {
-    userManager.signinRedirectCallback()
-      .then(user => {
-      })
-      .catch(error => {
-        props.notify(`Login failed - ${error}`)
-      })
-      // I would like to use `finally` here, but some mainstream
-      // browsers do not support it yet. Neither does Node 8.12.
-      // userManager.clearStaleState()
-  }
-
   useEffect(
     () => {
       if (!props.uptodate && window.location.pathname !== '/callback') {
@@ -191,6 +179,20 @@ export const App = props => {
         listRides()
       }
     }
+  )
+
+  const {notify} = props
+
+  const exchangeCodeForToken = useCallback(
+    () => {
+      userManager.signinRedirectCallback()
+        .then(user => {
+        })
+        .catch(error => {
+          notify(`Login failed - ${error}`)
+        })
+    },
+    [notify, userManager]
   )
 
   const menu = (

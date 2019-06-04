@@ -1,16 +1,10 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
 
 const Callback = props => {
-
-  useEffect(() => {
-    props.exchangeCodeForToken()
-    return () => props.history.replace('/')
-  },
-  [props]
-)
-
+  props.exchangeCodeForToken()
+  props.history.replace('/')
   return (
     <p></p>
   )
