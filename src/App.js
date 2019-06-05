@@ -44,7 +44,7 @@ export const App = props => {
   }
   const [userManager] = useState(new UserManager(config))
 
-  const {login, logout} = props
+  const {login, logout, notify, filter, resetRides, refreshing} = props
 
   const propagateUser = useCallback(
     user => {
@@ -157,7 +157,7 @@ export const App = props => {
   useEffect(
     () => {
       if (!props.uptodate && window.location.pathname !== '/callback') {
-        props.refreshing()
+        refreshing()
         const listRidesConfig = {
           baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
           url: 'rides',
@@ -170,7 +170,7 @@ export const App = props => {
           axios(listRidesConfig)
             .then(
               (res) => {
-                props.resetRides(res.data)
+                resetRides(res.data)
             })
             .catch(
               (err) => {
@@ -180,8 +180,6 @@ export const App = props => {
       }
     }
   )
-
-  const {notify} = props
 
   const exchangeCodeForToken = useCallback(
     () => {
@@ -202,7 +200,7 @@ export const App = props => {
       />)
 
   const rides = props.rides?
-                  props.rides.filter(props.filter)
+                  props.rides.filter(filter)
                     .map(ride =>
                           <Ride
                             ride={ride}
