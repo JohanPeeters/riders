@@ -8,7 +8,7 @@ import App from '../App'
 
 jest.mock('axios')
 const middlewares = []
-const store = configureStore(middlewares)({errorMessage: '', rides: [], uptodate: false, filter: ride => true})
+const store = configureStore(middlewares)({errorMessage: '', rides: [], fresh: false, filter: ride => true})
 
 describe('App', () => {
 

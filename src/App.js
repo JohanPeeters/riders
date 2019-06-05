@@ -156,7 +156,7 @@ export const App = props => {
 
   useEffect(
     () => {
-      if (!props.uptodate && window.location.pathname !== '/callback') {
+      if (!props.fresh && window.location.pathname !== '/callback') {
         refreshing()
         const listRidesConfig = {
           baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
@@ -236,10 +236,11 @@ App.propTypes = {
   logout: PropTypes.func.isRequired,
   rides: PropTypes.array.isRequired,
   filter: PropTypes.func.isRequired,
+  fresh: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({
-  uptodate: state.fresh,
+  fresh: state.fresh,
   rides: state.rides,
   filter: state.filter,
   user: state.user
