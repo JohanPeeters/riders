@@ -182,7 +182,8 @@ export const App = ({login, logout, notify, filter, resetRides, rides, refreshin
             })
         listRides()
       }
-    }
+    },
+    [fresh, refreshing, resetRides, notify]
   )
 
   const exchangeCodeForToken = useCallback(
