@@ -15,7 +15,7 @@ import RideSharingStore from './helpers/RideSharingStore'
 import RideSharingMenu from './components/RideSharingMenu'
 import makeVault from './helpers/vault'
 
-export const App = props => {
+export const App = ({login, logout, notify, filter, resetRides, rides, refreshing, fresh, user}) => {
   const [accessTokenKey, setAccessTokenKey] = useState(undefined)
   const [profileKey, setProfileKey] = useState(undefined)
   const config = {
@@ -44,8 +44,6 @@ export const App = props => {
   }
   const [userManager] = useState(new UserManager(config))
 
-  const {login, logout, notify, filter, resetRides, refreshing} = props
-
   const propagateUser = useCallback(
     user => {
       const vault = makeVault()
@@ -61,7 +59,7 @@ export const App = props => {
 
   useEffect(
     () => {
-      if (!props.user) {
+      if (!user) {
         userManager.getUser()
           .then(user => {
             // If no user is found, oidc-client returns null
@@ -72,7 +70,8 @@ export const App = props => {
             console.log(`no user: ${JSON.stringify(err)}`)
           })
       }
-    }
+    },
+    [user, userManager, propagateUser]
   )
 
   useEffect(
@@ -117,46 +116,51 @@ export const App = props => {
     [userManager, logout, propagateUser]
   )
 
-  const signin = () => {
-    // I would like to first try whether the user still has a session with the AS with
-    // userManager.querySessionStatus()
-    // However, this is pointless as it does not retrieve the access token, only the id token:
-    // scope parameter is hard-coded to `openid`.
-    // This could be changed.
-    userManager.signinRedirect()
-  }
-  const signout = () => {
-    // the most logical implementation would be
-    // userManager.signoutRedirect({post_logout_redirect_uri: window.origin})
-    // unfortunately this does not work because the query parameters Cognito and Auth0
-    // expect are not sent by oidc-client.
-    // Without arguments, oidc-client sends the
-    // id_token in a parameter named id_token_hint.
-    // By adding parameters, it can be arranged to also send state and
-    // post_logout_redirect_uri. The latter could have been useful since Cognito
-    // expects a parameter `logout_uri` and Auth0 expects a parameter `returnTo`
-    // with the same semantics.
-    // Both Cognito and Auth0 also expects the client_id. The logout URI and client ID will be supplied
-    // in the redirect below. But first, we remove the user from the store. If we
-    // do not do this, the app will continue to use stored tokens. Since these are
-    // self-contained tokens, they are not validated with the issuer and will
-    // continue to afford access.
-    userManager.removeUser()
-    // redirecting the browser to the logout page will cause flicker.
-    // Using an iframe avoids this flicker, but is not possible
-    // with Cognito since it serves all its responses with X-Frame-Option DENY.
-    // Auth0 does not. Therefore an iframe is an option with Auth0. A simpler approach is
-    // to query the logout page with XHR. However, the AS only cancels its session if cookies are sent with the request.
-    // Simply adding `withCredentials: true` to the XHR request does not cut it:
-    // the browser does not send the cookies (credentials) as it has not been given assurance by the server that it can do so.
-    // Back to iframes. No support for that from oidc-client. Not going to implement this for now.
+  const signin = useCallback(() => {
+      // I would like to first try whether the user still has a session with the AS with
+      // userManager.querySessionStatus()
+      // However, this is pointless as it does not retrieve the access token, only the id token:
+      // scope parameter is hard-coded to `openid`.
+      // This could be changed.
+      userManager.signinRedirect()
+    },
+    [userManager]
+  )
 
-    window.location.href = `${process.env.REACT_APP_AS_ENDPOINTS}/logout?client_id=${process.env.REACT_APP_CLIENT_ID}&logout_uri=${window.origin}`
-  }
+  const signout = useCallback(() => {
+      // the most logical implementation would be
+      // userManager.signoutRedirect({post_logout_redirect_uri: window.origin})
+      // unfortunately this does not work because the query parameters Cognito and Auth0
+      // expect are not sent by oidc-client.
+      // Without arguments, oidc-client sends the
+      // id_token in a parameter named id_token_hint.
+      // By adding parameters, it can be arranged to also send state and
+      // post_logout_redirect_uri. The latter could have been useful since Cognito
+      // expects a parameter `logout_uri` and Auth0 expects a parameter `returnTo`
+      // with the same semantics.
+      // Both Cognito and Auth0 also expects the client_id. The logout URI and client ID will be supplied
+      // in the redirect below. But first, we remove the user from the store. If we
+      // do not do this, the app will continue to use stored tokens. Since these are
+      // self-contained tokens, they are not validated with the issuer and will
+      // continue to afford access.
+      userManager.removeUser()
+      // redirecting the browser to the logout page will cause flicker.
+      // Using an iframe avoids this flicker, but is not possible
+      // with Cognito since it serves all its responses with X-Frame-Option DENY.
+      // Auth0 does not. Therefore an iframe is an option with Auth0. A simpler approach is
+      // to query the logout page with XHR. However, the AS only cancels its session if cookies are sent with the request.
+      // Simply adding `withCredentials: true` to the XHR request does not cut it:
+      // the browser does not send the cookies (credentials) as it has not been given assurance by the server that it can do so.
+      // Back to iframes. No support for that from oidc-client. Not going to implement this for now.
+
+      window.location.href = `${process.env.REACT_APP_AS_ENDPOINTS}/logout?client_id=${process.env.REACT_APP_CLIENT_ID}&logout_uri=${window.origin}`
+    },
+    [userManager]
+  )
 
   useEffect(
     () => {
-      if (!props.fresh && window.location.pathname !== '/callback') {
+      if (!fresh && window.location.pathname !== '/callback') {
         refreshing()
         const listRidesConfig = {
           baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
@@ -174,7 +178,7 @@ export const App = props => {
             })
             .catch(
               (err) => {
-                props.notify(`cannot retrieve rides - ${err}`)
+                notify(`cannot retrieve rides - ${err}`)
             })
         listRides()
       }
@@ -199,16 +203,16 @@ export const App = props => {
         profileKey={profileKey}
       />)
 
-  const rides = props.rides?
-                  props.rides.filter(filter)
-                    .map(ride =>
-                          <Ride
-                            ride={ride}
-                            disabled={false}
-                            accessTokenKey={accessTokenKey}
-                            profileKey={profileKey}
-                          />)
-                  :undefined
+  const rideList = rides?
+                    rides.filter(filter)
+                      .map(ride =>
+                            <Ride
+                              ride={ride}
+                              disabled={false}
+                              accessTokenKey={accessTokenKey}
+                              profileKey={profileKey}
+                            />)
+                      :undefined
   return (
     <div>
       <Header
@@ -218,7 +222,7 @@ export const App = props => {
       />
       <Route path='/' render={() =>
           <Grid container justify='center'>
-            <Rides rides={rides}/>
+            <Rides rides={rideList}/>
           </Grid>
       }/>
       <Route path='/callback' render={props => (
