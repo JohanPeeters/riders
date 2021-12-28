@@ -7,7 +7,7 @@
     "@material-ui/icons": "^3.0.2",
     "axios": "^0.18.1",
     "eslint-plugin-react": "^7.13.0",
-    "oidc-client": "^1.7.1",
+    "oidc-client": "^1.11.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^6.0.1",
