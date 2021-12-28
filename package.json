@@ -5,7 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
-    "axios": "^0.18.1",
+    "axios": "^0.21.2",
     "eslint-plugin-react": "^7.13.0",
     "oidc-client": "^1.7.1",
     "react": "^16.8.6",
